@@ -21,7 +21,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
                       :idp_cert_fingerprint => GlobalSetting.try(:saml_cert_fingerprint),
                       :idp_cert => GlobalSetting.try(:saml_cert),
                       :attribute_statements => { :nickname => ['screenName'] },
-                      :assertion_consumer_service_url => Discourse.base_url + "/auth/saml/callback",
+                      :assertion_consumer_service_url => "https://discourse.fixprotocol.com/auth/saml/callback",
                       :custom_url => (GlobalSetting.try(:saml_request_method) == 'post') ? "/discourse_saml" : nil
   end
 
@@ -48,9 +48,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
     result.email = auth[:info].email || uid
     result.email_valid = true
     result.skip_email_validation = true
-   // if result.respond_to?(:skip_email_validation) && GlobalSetting.try(:saml_skip_email_validation)
-      
-    end
+   
 
     current_info = ::PluginStore.get("saml", "saml_user_#{uid}")
     if current_info
