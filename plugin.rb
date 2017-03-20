@@ -28,7 +28,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
   
   
   def after_authenticate(auth)
-    logger.info("Raw Response: ")
+    logger.info("Raw Response") if !logger.nil?
     result = Auth::Result.new
 
     if GlobalSetting.try(:saml_log_auth)
