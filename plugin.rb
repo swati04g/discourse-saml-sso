@@ -25,9 +25,10 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
                       :custom_url => (GlobalSetting.try(:saml_request_method) == 'post') ? "/discourse_saml" : nil
   end
   
-  logger.info("Raw Response: ")
+  
   
   def after_authenticate(auth)
+    logger.info("Raw Response: ")
     result = Auth::Result.new
 
     if GlobalSetting.try(:saml_log_auth)
