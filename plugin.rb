@@ -9,6 +9,7 @@ gem 'macaddr', '1.0.0'
 gem 'uuid', '2.3.7'
 gem 'ruby-saml', '1.3.1'
 gem "omniauth-saml", '1.6.0'
+gem 'saml2ruby', '1.1.0'
 
 request_method = GlobalSetting.try(:saml_request_method) || 'get'
 
@@ -28,7 +29,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
   
   
   def after_authenticate(auth)
-    logger.info("Raw Response") if !logger.nil?
+    Rails.logger.info 'after authenticate'
     result = Auth::Result.new
 
     if GlobalSetting.try(:saml_log_auth)
@@ -70,6 +71,10 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
 
   def after_create_account(user, auth)
     ::PluginStore.set("saml", "saml_user_#{auth[:extra_data][:saml_user_id]}", {user_id: user.id })
+  end
+  
+  def callback_phase
+    Rails.logger.info '-----override callback ------'
   end
 end
 
