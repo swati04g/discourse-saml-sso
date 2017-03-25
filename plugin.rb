@@ -66,16 +66,15 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
     end
     
     result.extra_data = { saml_user_id: uid }
-    groups = auth.extra[:raw_info].attributes['role'].try(:first)
+    groups = auth.extra[:raw_info].attributes['role']
         update_user_groups(result.user, groups)
     result
   end
 
   def after_create_account(user, auth)
-    groups = auth.extra[:raw_info].attributes['role'].try(:first)
-    Rails.logger.info '----after create account-' + data
+    groups = auth.extra[:raw_info].attributes['role']
     ::PluginStore.set("saml", "saml_user_#{auth[:extra_data][:saml_user_id]}", {user_id: user.id })
-          update_user_groups(user, groups)
+    update_user_groups(user, groups)
   end
 
   def update_user_groups(user, grouplist)
