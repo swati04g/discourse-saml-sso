@@ -67,7 +67,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
     
     result.extra_data = { saml_user_id: uid }
     groups = auth.extra[:raw_info].attributes['role'].try(:first)
-    update_user_groups(result.user, groups)
+        update_user_groups(result.user, groups)
     result
   end
 
@@ -75,37 +75,34 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
     groups = auth.extra[:raw_info].attributes['role'].try(:first)
     Rails.logger.info '----after create account-' + data
     ::PluginStore.set("saml", "saml_user_#{auth[:extra_data][:saml_user_id]}", {user_id: user.id })
-	  update_user_groups(user, groups)
+          update_user_groups(user, groups)
   end
-  
-  def update_user_groups(user, groups)
+
+  def update_user_groups(user, grouplist)
     Rails.logger.info 'update user groups'
-    grouplist = groups.select { |item| item.starts_with?("beta-") }.map { |item| item[5, item.length - 5] }
-    Rails.logger.info "After create account " + grouplist.join(",")
+    #grouplist = groups.select { |item| item.starts_with?("beta-") }.map { |item| item[5, item.length - 5] }
+    #Rails.logger.info "After create account " + grouplist.join(",")
     Group.joins(:users).where(users: { id: user.id } ).each do |c|
       gname = c.name
-      if gname.start_with?("beta_")
-        gname = gname[5, gname.length - 5]
         if grouplist.include?(gname)
           grouplist.delete(gname) # remove it from the list
         else
           c.group_users.where(user_id: user.id).destroy_all
            Rails.logger.info "Would remove group " + c.name
         end
-      end
+      #end
     end
     grouplist.each do |c|
-       grp = Group.where(name: "beta_" + c).first
+       grp = Group.where(name: c).first
        if not grp.nil?
          grp.group_users.create(user_id: user.id, group_id: grp.id)
          Rails.logger.info "adding user to " + grp.name
        end
     end
   end
-  
-  def callback_phase
-    Rails.logger.info '-----override callback ------'
+
   end
+
 end
 
 if request_method == 'post'
