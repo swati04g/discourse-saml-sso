@@ -80,19 +80,19 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
   def update_user_groups(user, grouplist)
     Rails.logger.info 'update user groups'
     #grouplist = groups.select { |item| item.starts_with?("beta-") }.map { |item| item[5, item.length - 5] }
-    Rails.logger.info  grouplist
-    Group.joins(:users).where(users: { id: user.id } ).each do |c|
-      gname = c.name
+    #Rails.logger.info  grouplist
+    #Group.joins(:users).where(users: { id: user.id } ).each do |c|
+    #  gname = c.name
      # if gname.start_with?("beta_")
       #  gname = gname[5, gname.length - 5]
-        if grouplist.include?(gname)
-          grouplist.delete(gname) # remove it from the list
-        else
-          c.group_users.where(user_id: user.id).destroy_all
-           Rails.logger.info "Would remove group " + c.name
-        end
+      #  if grouplist.include?(gname)
+      #    grouplist.delete(gname) # remove it from the list
+      #  else
+       #   c.group_users.where(user_id: user.id).destroy_all
+      #     Rails.logger.info "Would remove group " + c.name
+      #  end
       #end
-    end
+   # end
     grouplist.each do |c|
        grp = c.gsub('discourse-',' ')
        Rails.logger.info "group map " + grp
