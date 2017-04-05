@@ -93,15 +93,10 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
       #  end
       #end
    # end
-    grouplist.each do |c|
-       grp = c.gsub('discourse-',' ')
-       Rails.logger.info "group map " + grp
-      # grp = Group.where(name: c).first
-       if (grp=="moderators")
+    if grouplist.include?("moderators")
          user.moderator=true
          user.save
-       end
-    end
+     end
   end
 
 
