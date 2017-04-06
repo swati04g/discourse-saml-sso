@@ -67,7 +67,9 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
     
     result.extra_data = { saml_user_id: uid }
     groups = auth.extra[:raw_info].attributes['role']
+    if(result.user) 
         update_user_groups(result.user, groups)
+    end
     result
   end
 
@@ -77,7 +79,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
     update_user_groups(user, groups)
   end
 
-  def update_user_groups(user, grouplist)
+  def update_user_groups(user, groups)
     Rails.logger.info 'update user groups'
     #grouplist = groups.select { |item| item.starts_with?("beta-") }.map { |item| item[5, item.length - 5] }
     #Rails.logger.info  grouplist
@@ -93,8 +95,12 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
       #  end
       #end
    # end
-    if grouplist.include?('discourse-moderators')
-         user.moderator=true
+    if groups.include?('discourse-moderators')
+         user.moderator = true
+         user.save
+     end
+    if grouplist.include?('discourse-admins')
+         user.admin = true
          user.save
      end
   end
