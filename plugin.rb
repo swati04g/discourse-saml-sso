@@ -99,7 +99,7 @@ class SamlAuthenticator < ::Auth::OAuth2Authenticator
          user.moderator = true
          user.save
      end
-    if grouplist.include?('discourse-admins')
+    if groups.include?('discourse-admins')
          user.admin = true
          user.save
      end
