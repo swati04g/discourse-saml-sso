@@ -7,8 +7,8 @@ require_dependency 'auth/oauth2_authenticator'
 
 gem 'macaddr', '1.0.0'
 gem 'uuid', '2.3.7'
-gem 'ruby-saml', '1.4.2'
-gem "omniauth-saml", '1.6.0'
+gem 'ruby-saml', '1.8.0'
+gem "omniauth-saml", '1.10.0'
 #gem 'saml2ruby', '1.1.0'
 
 request_method = GlobalSetting.try(:saml_request_method) || 'get'
